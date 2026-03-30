@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POPUP-ADVENTURE.EXE</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Boot Screen -->
+  <div id="boot-screen">
+    <div class="boot-text"></div>
+  </div>
+
+  <!-- Desktop -->
+  <div id="desktop">
+
+    <!-- Desktop Icons -->
+    <div id="desktop-icons">
+      <div class="desktop-icon" data-icon="my-computer">
+        <div class="icon-image">&#128187;</div>
+        <span>My Computer</span>
+      </div>
+      <div class="desktop-icon" data-icon="recycle-bin">
+        <div class="icon-image">&#128465;</div>
+        <span>Recycle Bin</span>
+      </div>
+      <div class="desktop-icon" data-icon="ie">
+        <div class="icon-image">&#127760;</div>
+        <span>Internet<br>Explorer</span>
+      </div>
+      <div class="desktop-icon" data-icon="notepad">
+        <div class="icon-image">&#128196;</div>
+        <span>Notepad</span>
+      </div>
+      <div class="desktop-icon" data-icon="minesweeper">
+        <div class="icon-image">&#128163;</div>
+        <span>Minesweeper</span>
+      </div>
+    </div>
+
+    <!-- Phase Indicator -->
+    <div id="phase-indicator"></div>
+
+    <!-- Popup Layer -->
+    <div id="popup-layer"></div>
+
+    <!-- Avatar Panel -->
+    <div id="avatar-panel">
+      <div id="avatar-title-bar">
+        <span id="avatar-title">YOUR CHARACTER</span>
+      </div>
+      <div id="avatar-canvas-wrap">
+        <canvas id="avatar-canvas"></canvas>
+      </div>
+      <div id="inventory-grid"></div>
+    </div>
+
+    <!-- Taskbar -->
+    <div id="taskbar">
+      <button id="start-button">
+        <span>&#127987;</span>
+        <span style="font-weight:bold;">Start</span>
+      </button>
+      <div id="taskbar-items"></div>
+      <div id="system-tray">
+        <span>&#128264;</span>
+        <span id="clock">11:47 PM</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Ending Overlay -->
+  <div id="ending-overlay"></div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/trait-system.js"></script>
+  <script src="js/story-tree.js"></script>
+  <script src="js/avatar.js"></script>
+  <script src="js/popup-manager.js"></script>
+  <script src="js/endings.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

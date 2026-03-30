@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOO-QUEST.EXE — The Legend of the Purple Cow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="menu/styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .font-retro {
+      font-family: 'VT323', monospace;
+    }
+
+    .win95-border-raised {
+      border: 2px solid;
+      border-color: #dfdfdf #404040 #404040 #dfdfdf;
+    }
+
+    .win95-border-sunken {
+      border: 2px solid;
+      border-color: #404040 #dfdfdf #dfdfdf #404040;
+    }
+
+    .win95-btn {
+      border: 2px solid;
+      border-color: #dfdfdf #404040 #404040 #dfdfdf;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .win95-btn:active {
+      border-color: #404040 #dfdfdf #dfdfdf #404040;
+      transform: translate(1px, 1px);
+    }
+
+    .blink {
+      animation: blink-animation 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink-animation {
+      to { visibility: hidden; }
+    }
+
+    .marquee-container {
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      animation: marquee 15s linear infinite;
+    }
+
+    @keyframes marquee {
+      0%   { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .construction-stripe {
+      background: repeating-linear-gradient(
+        -45deg,
+        #ffff00,
+        #ffff00 10px,
+        #000000 10px,
+        #000000 20px
+      );
+    }
+
+    .pixel-shadow {
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.3);
+    }
+
+    .hover-raise:hover {
+      transform: translateY(-2px);
+      box-shadow: 6px 6px 0px rgba(0,0,0,0.3);
+      transition: all 0.15s ease;
+    }
+
+    .hover-raise {
+      transition: all 0.15s ease;
+    }
+
+    .counter-glow {
+      text-shadow: 0 0 8px #00ff00, 0 0 2px #00ff00;
+    }
+
+    .title-gradient {
+      background: linear-gradient(90deg, rgb(0, 0, 128) 0%, rgb(16, 132, 208) 100%);
+    }
+
+    .scanline::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+    }
+
+    .scanline-off::after {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-[#008080]">
+
+  <div id="main-content" class="max-w-[1440px] mx-auto flex flex-col bg-[#c0c0c0] shadow-[8px_8px_0px_rgba(0,0,0,0.4)]">
+
+    <!-- Title Bar -->
+    <div class="flex w-full h-7 justify-between items-center title-gradient px-3 py-1">
+      <div class="flex items-center gap-2">
+        <span class="text-[#ffff00] text-sm">🐄</span>
+        <span class="text-white text-sm font-bold">MOO-QUEST.EXE — The Legend of the Purple Cow</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+          <span class="text-black text-[10px] font-bold leading-none">_</span>
+        </div>
+        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+          <span class="text-black text-[10px] font-bold leading-none">□</span>
+        </div>
+        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+          <span class="text-black text-[10px] font-bold leading-none">✕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Bar -->
+    <div class="flex items-center bg-[#c0c0c0] px-1 py-0.5 border-b-2 border-b-[#808080]">
+
+      <!-- File -->
+      <div class="menu-item" data-menu="file">
+        <span><u>F</u>ile</span>
+        <div class="menu-dropdown" data-dropdown="file">
+          <div class="menu-dropdown-item" data-action="newGame">New Game <span class="shortcut">Ctrl+N</span></div>
+          <div class="menu-dropdown-item" data-action="saveGame">Save Game <span class="shortcut">Ctrl+S</span></div>
+          <div class="menu-dropdown-item" data-action="loadGame">Load Game <span class="shortcut">Ctrl+L</span></div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="exportSave">Export Save...</div>
+          <div class="menu-dropdown-item" data-action="importSave">Import Save...</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="exit">Exit</div>
+        </div>
+      </div>
+
+      <!-- Edit -->
+      <div class="menu-item" data-menu="edit">
+        <span><u>E</u>dit</span>
+        <div class="menu-dropdown" data-dropdown="edit">
+          <div class="menu-dropdown-item" data-action="playerName">Player Name...</div>
+          <div class="menu-dropdown-item" data-action="preferences">Preferences...</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="resetProgress">Reset All Progress...</div>
+        </div>
+      </div>
+
+      <!-- View -->
+      <div class="menu-item" data-menu="view">
+        <span><u>V</u>iew</span>
+        <div class="menu-dropdown" data-dropdown="view">
+          <div class="menu-dropdown-item" data-action="playerStats">Player Stats</div>
+          <div class="menu-dropdown-item" data-action="leaderboard">&#x2605; Leaderboard</div>
+          <div class="menu-dropdown-item" data-action="achievements">Achievements</div>
+          <div class="menu-dropdown-item" data-action="worldMap">World Map</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="toggleScanlines"><span class="check">&#10003;</span> Toggle Scanlines</div>
+          <div class="menu-dropdown-item" data-action="toggleAnimations"><span class="check">&#10003;</span> Toggle Animations</div>
+          <div class="menu-dropdown-item" data-action="fullscreen">Fullscreen <span class="shortcut">F11</span></div>
+        </div>
+      </div>
+
+      <!-- Quest -->
+      <div class="menu-item" data-menu="quest">
+        <span><u>Q</u>uest</span>
+        <div class="menu-dropdown" data-dropdown="quest">
+          <div class="menu-dropdown-item" data-action="activeQuests">Active Quests</div>
+          <div class="menu-dropdown-item" data-action="completedQuests">Completed Quests</div>
+          <div class="menu-dropdown-item" data-action="dailyQuests">Daily Quests</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="questLog">Quest Log</div>
+        </div>
+      </div>
+
+      <!-- Inventory -->
+      <div class="menu-item" data-menu="inventory">
+        <span><u>I</u>nventory</span>
+        <div class="menu-dropdown" data-dropdown="inventory">
+          <div class="menu-dropdown-item" data-action="equipment">Equipment</div>
+          <div class="menu-dropdown-item" data-action="powerups">Power-Ups</div>
+          <div class="menu-dropdown-item" data-action="cosmetics">Cosmetics</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item disabled" data-action="coins">&#x1FA99; Moo-Coins: 0</div>
+        </div>
+      </div>
+
+      <!-- Help -->
+      <div class="menu-item" data-menu="help">
+        <span><u>H</u>elp</span>
+        <div class="menu-dropdown" data-dropdown="help">
+          <div class="menu-dropdown-item" data-action="howToPlay">How to Play <span class="shortcut">F1</span></div>
+          <div class="menu-dropdown-item" data-action="controls">Controls</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="about">About MOO-QUEST.EXE</div>
+          <div class="menu-separator"></div>
+          <div class="menu-dropdown-item" data-action="cowlipy">Ask Cowlipy... &#x1F42E;</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Hero Section -->
+    <div class="flex flex-col items-center p-8 gap-4">
+
+      <!-- Announcement Banner -->
+      <div class="flex items-center bg-[#ffff00] px-6 py-2 gap-3 win95-border-raised cursor-pointer hover:brightness-110">
+        <span class="text-[#ff0000] text-xs font-bold uppercase blink">★ NEW! ★</span>
+        <span class="text-black text-sm font-bold">Version 2.0 Released — Now with MULTIPLAYER support!</span>
+        <span class="text-[#ff0000] text-xs font-bold uppercase blink">★ HOT! ★</span>
+      </div>
+
+      <!-- Hero Content -->
+      <div class="flex w-full max-w-[1200px] items-center gap-8 flex-wrap justify-center lg:flex-nowrap">
+
+        <!-- Hero Image -->
+        <div class="flex flex-col items-center bg-[#000080] p-4 border-4 border-black relative scanline"
+             style="box-shadow: inset 2px 2px 0px rgb(64,64,64), inset -2px -2px 0px rgb(0,0,64);">
+          <img src="https://cdn.wonder.so/images/019d3c8b-8372-78d4-b9b0-d635608a87eb/671dc4ec67006eaf17b4349df20996e11c5e366bca510951b1bb78cd2d4ad98e.jpg"
+               alt="Violet the Purple Cow — Pixel Art"
+               class="w-[320px] h-[320px] object-cover" />
+          <span class="mt-2 text-[#00ff00] font-mono text-xs font-bold uppercase counter-glow">PLAYER 1 — READY!</span>
+        </div>
+
+        <!-- Hero Text -->
+        <div class="flex flex-col flex-1 gap-4 min-w-[300px]">
+          <h1 class="text-[#800080] text-7xl font-black tracking-[-1.8px] uppercase m-0">MOO-QUEST</h1>
+          <h2 class="text-[#000080] text-3xl font-black uppercase m-0">The Legend of the Purple Cow</h2>
+
+          <!-- Description Panel -->
+          <div class="flex flex-col bg-white p-4 gap-2 win95-border-sunken">
+            <p class="text-black text-base leading-relaxed m-0">
+              In a world where all cows are brown and boring, one purple-and-white bovine dares to be different. Guide
+              <span class="text-[#800080] font-bold">Violet the Cow</span>
+              through 8 legendary worlds, defeat the evil
+              <span class="text-[#ff0000] font-bold">Baron Beige</span>,
+              and restore color to the Meadowlands!
+            </p>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex items-center gap-4 flex-wrap">
+            <button id="start-quest-btn" onclick="launchGame('tutorial')" class="flex justify-center items-center bg-[#00aa00] px-8 py-3 win95-btn cursor-pointer hover:brightness-110"
+                    style="box-shadow: inset -1px -1px 0px rgb(0,68,0), inset 1px 1px 0px rgb(0,204,0);">
+              <span class="text-white text-lg font-bold tracking-[0.45px] uppercase">▶ START QUEST</span>
+            </button>
+            <button onclick="MenuSystem.closeAll(); DatabaseBridge.loadProgress().then(function(d){ if(d){ if(d.player) Object.assign(GameState.player,d.player); if(d.tutorial) Object.assign(GameState.tutorial,d.tutorial); if(d.worlds) Object.assign(GameState.worlds,d.worlds); MenuDialogs.toast('Game loaded.'); } else { MenuDialogs.alert('MOO-QUEST.EXE','No saved game found. Start a new quest first!'); }})"
+                    class="flex justify-center items-center bg-[#c0c0c0] px-8 py-3 win95-btn cursor-pointer"
+                    style="box-shadow: inset -1px -1px 0px rgb(64,64,64), inset 1px 1px 0px rgb(223,223,223);">
+              <span class="text-black text-lg font-bold tracking-[0.45px] uppercase">💾 LOAD GAME</span>
+            </button>
+          </div>
+
+          <!-- Stats Counter -->
+          <div class="flex items-center bg-black px-4 py-2 gap-6 win95-border-sunken flex-wrap">
+            <span class="text-[#00ff00] font-mono text-xs counter-glow">PLAYERS ONLINE: <span id="players">00,847</span></span>
+            <span class="text-[#808080] text-xs">|</span>
+            <span class="text-[#00ff00] font-mono text-xs counter-glow">TOTAL QUESTS: <span id="quests">1,247,891</span></span>
+            <span class="text-[#808080] text-xs">|</span>
+            <span class="text-[#ffff00] font-mono text-xs font-bold" style="text-shadow: 0 0 8px #ffff00, 0 0 2px #ffff00;">YOUR SCORE: <span id="total-score">0</span></span>
+            <span class="text-[#808080] text-xs">|</span>
+            <span class="text-[#00ff00] font-mono text-xs counter-glow">SINCE: 1997</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="w-full h-1 bg-gradient-to-b from-[#808080] to-white"></div>
+
+    <!-- Worlds Section -->
+    <div id="worlds-section" class="flex flex-col items-center bg-[#c0c0c0] p-8 gap-6">
+      <h2 class="text-[#000080] text-4xl font-black tracking-[-0.9px] uppercase m-0">⚔ CHOOSE YOUR WORLD ⚔</h2>
+
+      <div class="flex max-w-[1200px] flex-wrap justify-center gap-4">
+
+        <!-- World 1 -->
+        <div id="world-1" data-world="emerald_pastures" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow">
+          <div class="flex justify-between items-center bg-[#00aa00] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 1</span>
+            <span class="text-white text-sm font-bold">Emerald Pastures</span>
+            <span class="world-status text-black text-xs font-bold uppercase">✓ UNLOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">Where Violet's journey begins. Learn the basics of mooing.</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-pointer" onclick="launchGame('tutorial')">
+              <span class="text-black text-sm font-bold uppercase">▶ ENTER WORLD</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- World 2 -->
+        <div id="world-2" data-world="crystal_caves" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow opacity-75">
+          <div class="flex justify-between items-center bg-[#0080ff] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 2</span>
+            <span class="text-white text-sm font-bold">Crystal Caves</span>
+            <span class="world-status text-black text-xs font-bold uppercase">🔒 LOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">Navigate underground caverns filled with glowing crystals.</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-not-allowed" disabled>
+              <span class="text-black text-sm font-bold uppercase">🔒 LOCKED</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- World 3 -->
+        <div id="world-3" data-world="lava_meadows" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow opacity-75">
+          <div class="flex justify-between items-center bg-[#ff4400] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 3</span>
+            <span class="text-white text-sm font-bold">Lava Meadows</span>
+            <span class="world-status text-black text-xs font-bold uppercase">🔒 LOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">Dodge fireballs and cross molten rivers of cheese.</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-not-allowed" disabled>
+              <span class="text-black text-sm font-bold uppercase">🔒 LOCKED</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- World 4 -->
+        <div id="world-4" data-world="cloud_kingdom" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow opacity-75">
+          <div class="flex justify-between items-center bg-[#8b00ff] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 4</span>
+            <span class="text-white text-sm font-bold">Cloud Kingdom</span>
+            <span class="world-status text-black text-xs font-bold uppercase">🔒 LOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">Bounce across cotton-candy clouds in the purple sky.</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-not-allowed" disabled>
+              <span class="text-black text-sm font-bold uppercase">🔒 LOCKED</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- World 5 -->
+        <div id="world-5" data-world="shadow_barn" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow opacity-75">
+          <div class="flex justify-between items-center bg-[#333333] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 5</span>
+            <span class="text-white text-sm font-bold">Shadow Barn</span>
+            <span class="world-status text-black text-xs font-bold uppercase">🔒 LOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">Face Baron Beige in his fortress of boredom.</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-not-allowed" disabled>
+              <span class="text-black text-sm font-bold uppercase">🔒 LOCKED</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- World 6 -->
+        <div id="world-6" data-world="rainbow_falls" class="flex w-[380px] flex-col bg-[#c0c0c0] win95-border-raised hover-raise pixel-shadow opacity-75">
+          <div class="flex justify-between items-center bg-[#ff00ff] px-3 py-1">
+            <span class="text-white text-xs font-bold uppercase">WORLD 6</span>
+            <span class="text-white text-sm font-bold">Rainbow Falls</span>
+            <span class="world-status text-black text-xs font-bold uppercase">🔒 LOCKED</span>
+          </div>
+          <div class="flex flex-col p-3 gap-2 border-t-2 border-t-[#808080]">
+            <span class="text-black text-sm leading-relaxed">The final showdown. Restore color to everything!</span>
+            <div class="world-score text-[#800080] text-xs font-bold" style="display:none;">BEST: <span>0</span></div>
+            <button class="world-btn flex justify-center items-center bg-[#c0c0c0] px-4 py-1.5 win95-btn cursor-not-allowed" disabled>
+              <span class="text-black text-sm font-bold uppercase">🔒 LOCKED</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="flex w-full flex-col items-center bg-[#ffff00] px-8 py-6 gap-4">
+      <!-- Construction Stripes -->
+      <div class="w-full h-3 construction-stripe"></div>
+
+      <div class="flex flex-col items-center bg-[#ffffcc] p-6 gap-3 border-4 border-black"
+           style="box-shadow: inset -2px -2px 0px rgb(128,128,128), inset 2px 2px 0px rgb(255,255,255);">
+        <span class="text-[#ff0000] text-3xl font-black uppercase blink">⚠ UNDER CONSTRUCTION ⚠</span>
+        <span class="text-black text-base font-bold text-center">More worlds coming soon! Sign our guestbook and bookmark this page!</span>
+        <div class="flex items-center gap-4 flex-wrap justify-center">
+          <button class="flex justify-center items-center bg-[#0000ff] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
+            <span class="text-white text-sm font-bold uppercase">📝 SIGN GUESTBOOK</span>
+          </button>
+          <button class="flex justify-center items-center bg-[#ff0000] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
+            <span class="text-white text-sm font-bold uppercase">⭐ BOOKMARK PAGE</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="w-full h-3 construction-stripe"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="flex flex-col items-center bg-[#c0c0c0] px-8 py-4 gap-2 border-t-4 border-t-[#808080]">
+      <span class="text-black text-xs font-bold text-center">© 1997 Moo-Quest Interactive. Best viewed in Netscape Navigator 4.0 at 800x600 resolution.</span>
+      <div class="flex items-center gap-4 flex-wrap justify-center">
+        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">About Us</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">FAQ</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">Webmaster</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">Cool Links</a>
+      </div>
+      <span class="text-[#808080] font-mono text-[10px]">You are visitor #<span id="visitor-count">0024891</span> — Page last updated: 12/15/1997</span>
+    </div>
+
+  </div>
+
+  <!-- Game Container (hidden until game launches) -->
+  <div id="game-container" class="max-w-[1440px] mx-auto bg-[#c0c0c0] shadow-[8px_8px_0px_rgba(0,0,0,0.4)]" style="display:none;">
+  </div>
+
+  <!-- Phaser Game Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+
+  <!-- Retro JavaScript for live counters -->
+  <script>
+    function animateCounter(elementId, target, duration) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const start = 0;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (target - start) * progress);
+        el.textContent = current.toLocaleString('en-US', { minimumIntegerDigits: 1 });
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    window.addEventListener('load', () => {
+      animateCounter('players', 847, 2000);
+      animateCounter('quests', 1247891, 3000);
+      animateCounter('visitor-count', 24891, 2500);
+    });
+
+    setInterval(() => {
+      const playersEl = document.getElementById('players');
+      if (playersEl) {
+        const current = parseInt(playersEl.textContent.replace(/,/g, ''));
+        const delta = Math.floor(Math.random() * 5) - 2;
+        const newVal = Math.max(800, current + delta);
+        playersEl.textContent = newVal.toLocaleString('en-US');
+      }
+    }, 3000);
+
+    // Game launcher
+    function launchGame(worldId) {
+      document.getElementById('main-content').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+      window.startMooQuest(worldId);
+    }
+
+    window.returnToMenu = function() {
+      if (window.mooQuestGame) {
+        window.mooQuestGame.destroy(true);
+        window.mooQuestGame = null;
+      }
+      document.getElementById('game-container').style.display = 'none';
+      document.getElementById('main-content').style.display = 'flex';
+      refreshMenuState();
+    };
+
+    // Read saved progress and update the landing page UI
+    function refreshMenuState() {
+      var saveData = localStorage.getItem('mooquest_save');
+      var scores = JSON.parse(localStorage.getItem('mooquest_scores') || '{}');
+      var worlds = null;
+
+      if (saveData) {
+        try { worlds = JSON.parse(saveData).worlds; } catch(e) {}
+      }
+
+      // Calculate total score across all worlds
+      var totalScore = 0;
+      for (var key in scores) {
+        totalScore += scores[key];
+      }
+      var scoreEl = document.getElementById('total-score');
+      if (scoreEl) scoreEl.textContent = totalScore.toLocaleString('en-US');
+
+      // Update each world card
+      var cards = [
+        { id: 'world-1', key: 'emerald_pastures' },
+        { id: 'world-2', key: 'crystal_caves' },
+        { id: 'world-3', key: 'lava_meadows' },
+        { id: 'world-4', key: 'cloud_kingdom' },
+        { id: 'world-5', key: 'shadow_barn' },
+        { id: 'world-6', key: 'rainbow_falls' }
+      ];
+
+      cards.forEach(function(c) {
+        var card = document.getElementById(c.id);
+        if (!card) return;
+
+        var w = worlds ? worlds[c.key] : null;
+        var unlocked = c.key === 'emerald_pastures' || (w && w.unlocked);
+        var completed = w && w.completed;
+        var bestScore = scores[c.key] || 0;
+
+        var statusEl = card.querySelector('.world-status');
+        var btn = card.querySelector('.world-btn');
+        var btnSpan = btn ? btn.querySelector('span') : null;
+        var scoreDiv = card.querySelector('.world-score');
+
+        if (completed) {
+          // Show completed state
+          statusEl.textContent = '★ COMPLETED';
+          statusEl.style.color = '#ffff00';
+          card.classList.remove('opacity-75');
+          btn.disabled = false;
+          btn.classList.remove('cursor-not-allowed');
+          btn.classList.add('cursor-pointer');
+          btnSpan.textContent = '▶ REPLAY WORLD';
+          // Show best score
+          if (scoreDiv) {
+            scoreDiv.style.display = 'block';
+            scoreDiv.querySelector('span').textContent = bestScore.toLocaleString('en-US');
+          }
+        } else if (unlocked) {
+          // Show unlocked state
+          statusEl.textContent = '✓ UNLOCKED';
+          statusEl.style.color = '#000000';
+          card.classList.remove('opacity-75');
+          btn.disabled = false;
+          btn.classList.remove('cursor-not-allowed');
+          btn.classList.add('cursor-pointer');
+          btnSpan.textContent = '▶ ENTER WORLD';
+          if (scoreDiv) scoreDiv.style.display = 'none';
+        } else {
+          // Locked state (default)
+          statusEl.textContent = '🔒 LOCKED';
+          statusEl.style.color = '#000000';
+          if (!card.classList.contains('opacity-75')) card.classList.add('opacity-75');
+          btn.disabled = true;
+          btn.classList.add('cursor-not-allowed');
+          btn.classList.remove('cursor-pointer');
+          btnSpan.textContent = '🔒 LOCKED';
+          if (scoreDiv) scoreDiv.style.display = 'none';
+        }
+      });
+    }
+
+    // Refresh on page load (after all scripts are ready)
+    window.addEventListener('load', function() {
+      refreshMenuState();
+    });
+  </script>
+
+  <!-- Game modules (loaded as regular scripts, order matters) -->
+  <script src="game/data/GameState.js"></script>
+  <script src="game/data/LevelData.js"></script>
+  <script src="game/utils/DatabaseBridge.js"></script>
+  <script src="game/systems/SoundSystem.js"></script>
+  <script src="game/systems/DialogSystem.js"></script>
+  <script src="game/systems/CombatSystem.js"></script>
+  <script src="game/sprites/SpriteFactory.js"></script>
+  <script src="game/scenes/BootScene.js"></script>
+  <script src="game/scenes/TutorialScene.js"></script>
+  <script src="game/scenes/HUDScene.js"></script>
+  <script src="game/scenes/PauseScene.js"></script>
+  <script src="game/scenes/VictoryScene.js"></script>
+  <script src="game/game.js"></script>
+
+  <!-- Menu system (DOM-based, separate from Phaser) -->
+  <script src="menu/MenuDialogs.js"></script>
+  <script src="menu/HelpContent.js"></script>
+  <script src="menu/InventoryUI.js"></script>
+  <script src="menu/Leaderboard.js"></script>
+  <script src="menu/MenuSystem.js"></script>
+  <script>
+    // Initialize menu system after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      MenuSystem.init();
+    });
+  </script>
+
+</body>
+</html>

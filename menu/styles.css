@@ -1,0 +1,528 @@
+/* =============================================================================
+   MOO-QUEST Menu System Styles — Win95 Authentic
+   ============================================================================= */
+
+/* --- Menu Bar Items --- */
+.menu-item {
+  position: relative;
+  padding: 2px 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.menu-item > span {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+}
+
+.menu-item:hover > span,
+.menu-item.active > span {
+  background-color: #000080;
+  color: #fff;
+}
+
+.menu-item.active > span {
+  background-color: #000080;
+  color: #fff;
+}
+
+/* --- Dropdown Panels --- */
+.menu-dropdown {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 9000;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+  min-width: 220px;
+  padding: 2px 0;
+}
+
+.menu-dropdown.open {
+  display: block;
+}
+
+/* --- Menu Items --- */
+.menu-dropdown-item {
+  position: relative;
+  padding: 3px 24px 3px 28px;
+  font-size: 13px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+  color: #000;
+}
+
+.menu-dropdown-item:hover {
+  background-color: #000080;
+  color: #fff;
+}
+
+.menu-dropdown-item.disabled {
+  color: #808080;
+  cursor: default;
+}
+
+.menu-dropdown-item.disabled:hover {
+  background-color: transparent;
+  color: #808080;
+}
+
+.menu-dropdown-item .shortcut {
+  float: right;
+  margin-left: 32px;
+  color: inherit;
+}
+
+.menu-dropdown-item .check {
+  position: absolute;
+  left: 8px;
+  top: 3px;
+}
+
+/* --- Separators --- */
+.menu-separator {
+  height: 0;
+  margin: 3px 2px;
+  border-top: 1px solid #808080;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* =============================================================================
+   Dialog System
+   ============================================================================= */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dialogFadeIn 0.15s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog-window {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+  min-width: 340px;
+  max-width: 560px;
+  max-height: 80vh;
+  animation: dialogSlideIn 0.15s ease-out;
+}
+
+@keyframes dialogSlideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.dialog-titlebar {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  padding: 3px 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: default;
+}
+
+.dialog-titlebar-text {
+  color: #fff;
+  font-size: 13px;
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  padding-left: 2px;
+}
+
+.dialog-close-btn {
+  width: 18px;
+  height: 18px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  line-height: 1;
+}
+
+.dialog-close-btn:active {
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+}
+
+.dialog-body {
+  padding: 16px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
+  color: #000;
+  overflow-y: auto;
+  max-height: 60vh;
+}
+
+.dialog-body-sunken {
+  background: #fff;
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  padding: 12px;
+  margin-bottom: 12px;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  max-height: 40vh;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px 14px;
+}
+
+.dialog-btn {
+  min-width: 80px;
+  padding: 4px 16px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.dialog-btn:active {
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  transform: translate(1px, 1px);
+}
+
+.dialog-btn.primary {
+  outline: 1px dotted #000;
+  outline-offset: -4px;
+}
+
+.dialog-input {
+  width: 100%;
+  padding: 4px 6px;
+  background: #fff;
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.dialog-input:focus {
+  outline: none;
+}
+
+/* =============================================================================
+   Inventory Dialog
+   ============================================================================= */
+
+.inventory-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: -2px;
+  position: relative;
+  z-index: 1;
+  padding: 0 8px;
+}
+
+.inventory-tab {
+  padding: 4px 16px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  border-bottom: none;
+  cursor: pointer;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
+  margin-right: 2px;
+  position: relative;
+  top: 2px;
+}
+
+.inventory-tab.active {
+  background: #c0c0c0;
+  border-bottom: 2px solid #c0c0c0;
+  top: 0;
+  padding-top: 6px;
+  font-weight: bold;
+}
+
+.inventory-tab:hover:not(.active) {
+  background: #d4d4d4;
+}
+
+.inventory-panel {
+  display: none;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  padding: 12px;
+  min-height: 200px;
+}
+
+.inventory-panel.active {
+  display: block;
+}
+
+/* Equipment Slots */
+.equip-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.equip-slot {
+  background: #fff;
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  padding: 8px;
+  min-height: 70px;
+  cursor: pointer;
+}
+
+.equip-slot:hover {
+  background: #f0f0ff;
+}
+
+.equip-slot-label {
+  font-size: 11px;
+  color: #808080;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: bold;
+}
+
+.equip-slot-empty {
+  color: #808080;
+  font-style: italic;
+  font-size: 12px;
+}
+
+.equip-item-name {
+  font-weight: bold;
+  font-size: 13px;
+  color: #000;
+}
+
+.equip-item-rarity {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.rarity-starter {
+  background: #c0c0c0;
+  color: #404040;
+  border: 1px solid #808080;
+}
+
+.rarity-common {
+  background: #e8e8e8;
+  color: #000;
+}
+
+.rarity-rare {
+  background: #4488ff;
+  color: #fff;
+}
+
+.rarity-epic {
+  background: #aa44ff;
+  color: #fff;
+}
+
+.rarity-legendary {
+  background: #ffaa00;
+  color: #000;
+}
+
+.equip-item-desc {
+  font-size: 12px;
+  color: #404040;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.equip-item-icon {
+  font-size: 20px;
+  float: left;
+  margin-right: 8px;
+}
+
+/* Empty state */
+.inventory-empty {
+  color: #808080;
+  font-style: italic;
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 13px;
+}
+
+/* Moo-Coins display in menu */
+.menu-coins {
+  font-weight: bold;
+}
+
+/* =============================================================================
+   Status Bar Message
+   ============================================================================= */
+
+.status-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  padding: 6px 20px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 13px;
+  color: #000;
+  z-index: 11000;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+  animation: toastIn 0.2s ease-out;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* =============================================================================
+   Cowlipy (Easter Egg)
+   ============================================================================= */
+
+.cowlipy-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9500;
+  display: none;
+  animation: cowlipyBounce 0.3s ease-out;
+}
+
+.cowlipy-container.visible {
+  display: block;
+}
+
+@keyframes cowlipyBounce {
+  0% { transform: scale(0) translateY(20px); }
+  60% { transform: scale(1.1) translateY(-5px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.cowlipy-bubble {
+  background: #ffffcc;
+  border: 2px solid #000;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  max-width: 220px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-size: 12px;
+  position: relative;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+}
+
+.cowlipy-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #ffffcc;
+}
+
+.cowlipy-body {
+  font-family: 'VT323', monospace;
+  font-size: 28px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+}
+
+.cowlipy-close {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: #808080;
+}
+
+.cowlipy-close:hover {
+  color: #000;
+}
+
+/* =============================================================================
+   Preferences Dialog
+   ============================================================================= */
+
+.pref-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.pref-row:last-child {
+  border-bottom: none;
+}
+
+.pref-label {
+  font-size: 13px;
+  color: #000;
+}
+
+.pref-toggle {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.pref-toggle.checked::after {
+  content: '✓';
+}
+
+/* Hidden file input for import */
+#save-import-input {
+  display: none;
+}
