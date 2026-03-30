@@ -17,7 +17,8 @@ const EndingSystem = {
       virus: () => this._playVirus(),
       prince: () => this._playPrince(),
       fbi: () => this._playFBI(),
-      hacker: () => this._playHacker()
+      hacker: () => this._playHacker(),
+      safe: () => this._playSafe()
     };
 
     const fn = endings[endingId];
@@ -239,6 +240,40 @@ const EndingSystem = {
           <p style="font-size:12px;color:#009900;margin-bottom:20px;">(Your hacker name is xX_P0PuP_SL4Y3R_Xx)</p>
           ${this._gameOverPanel('HACKER ASCENSION', 'Your healthy paranoia and insatiable curiosity led you to master the digital realm. You are now an elite hacker known only by your handle. The pop-ups fear YOU.')}
         </div>
+      </div>
+    `;
+    this._bindReplay();
+  },
+
+  // ===== ENDING 6: THE INTERNET SURVIVOR (SAFE) =====
+  _playSafe() {
+    this.overlay.className = '';
+    this.overlay.classList.add('active');
+    this.overlay.innerHTML = `
+      <div class="ending-safe" style="width:100%;height:100%;overflow:auto;">
+        <div class="safe-certificate">
+          <h1>CERTIFICATE OF INTERNET SAFETY</h1>
+          <h2>Awarded to: You, the World's Most Cautious Surfer</h2>
+          <p>Congratulations. You did it.</p>
+          <p>Every pop-up. Every flashing banner. Every fake prize. Every suspicious download. Every desperate plea from a Nigerian prince.</p>
+          <p><b>You closed them ALL.</b></p>
+          <p>While everyone else was downloading BonziBuddy and sending their credit card numbers to strangers, you just... clicked the X.</p>
+          <p>You are the <b>ONLY person in 1997</b> to survive the internet completely unscathed.</p>
+          <div class="safe-stats">
+            <div>&#10004; Viruses installed: 0</div>
+            <div>&#10004; Toolbars downloaded: 0</div>
+            <div>&#10004; Purple monkeys befriended: 0</div>
+            <div>&#10004; Money sent to princes: $0.00</div>
+            <div>&#10004; Organs listed on eBay: 0</div>
+            <div>&#10004; Bank account: INTACT</div>
+            <div>&#10004; FBI file: EMPTY</div>
+            <div>&#10004; Dignity: PRESERVED</div>
+          </div>
+          <p>The internet tried everything. It threw its best pop-ups at you. It begged. It threatened. It offered you free iPods.</p>
+          <p>And you said <b>"No."</b></p>
+          <p style="font-size:12px;color:#888;margin-top:16px;">Honestly, you might be too powerful. The pop-ups are scared of you now.</p>
+        </div>
+        ${this._gameOverPanel('THE INTERNET SURVIVOR', 'You navigated the entire early internet without clicking a single suspicious button. You are either incredibly disciplined or incredibly boring. Either way, you win.')}
       </div>
     `;
     this._bindReplay();
