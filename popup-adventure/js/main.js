@@ -39,6 +39,7 @@ const Game = {
     this._degradationTier = 0;
     this._ieToolbarCount = 0;
     this._iconClickIndex = {};
+    this._mooQuestInstalled = false;
     this._updateClock();
     setInterval(() => this._updateClock(), 60000);
   },
@@ -99,6 +100,17 @@ const Game = {
     // Remove notepad window
     const notepad = document.querySelector('.notepad-window');
     if (notepad) notepad.remove();
+
+    // Remove MooQuest elements
+    const mqDownload = document.querySelector('.mooquest-download');
+    if (mqDownload) mqDownload.remove();
+    const mqWindow = document.querySelector('.mooquest-window');
+    if (mqWindow) mqWindow.remove();
+    const mqTaskbar = document.querySelector('[data-popup-id="mooquest-window"]');
+    if (mqTaskbar) mqTaskbar.remove();
+    const mqIcon = document.querySelector('[data-icon="mooquest"]');
+    if (mqIcon) mqIcon.remove();
+    this._mooQuestInstalled = false;
 
     // Reset webring & guestbook
     this._currentWebringIndex = 0;
@@ -846,6 +858,11 @@ im just a kid. im 12.</div>
     setTimeout(() => {
       this._startPhase1();
     }, 2000);
+
+    // Show MooQuest download popup after story popups start
+    setTimeout(() => {
+      this._showMooQuestDownload();
+    }, 5000);
   },
 
   _startPhase1() {
@@ -907,6 +924,10 @@ im just a kid. im 12.</div>
     const currentNodeData = StoryTree.getNode(this.currentNode);
     if (!currentNodeData || !currentNodeData.next) return;
 
+    // Remove any lingering MooQuest download popup so it doesn't overlap transitions
+    const mqPopup = document.querySelector('.mooquest-download');
+    if (mqPopup) mqPopup.remove();
+
     const nextNodeId = currentNodeData.next;
     const nextNode = StoryTree.getNode(nextNodeId);
 
@@ -940,6 +961,8 @@ im just a kid. im 12.</div>
             this._updatePhaseIndicator();
             this._spawnNodePopups(resolvedKey);
           } else if (resolvedNode.popups) {
+            // Set currentNode so _advanceStory can't re-enter the gate
+            this.currentNode = nextNodeId;
             this.phase = resolvedNode.phase || 4;
             this._updatePhaseIndicator();
             const popupDefs = resolvedNode.popups.map(pid => ({
@@ -959,7 +982,13 @@ im just a kid. im 12.</div>
     };
 
     // Show phase transition before spawning next popups
-    this._showPhaseTransition(doSpawn);
+    this._showPhaseTransition(() => {
+      doSpawn();
+      // Mid-story MooQuest download popup only at Phase 3
+      if (this.phase === 3) {
+        setTimeout(() => this._showMooQuestDownload(), 1500);
+      }
+    });
   },
 
   _updatePhaseIndicator() {
@@ -974,6 +1003,246 @@ im just a kid. im 12.</div>
       };
       indicator.textContent = phaseNames[this.phase] || `PHASE ${this.phase}`;
       indicator.style.display = 'block';
+    }
+  },
+
+  // ===== MOOQUEST INTEGRATION =====
+
+  _showMooQuestDownload() {
+    if (document.querySelector('.mooquest-download') || document.querySelector('.mooquest-window')) return;
+
+    const layer = document.getElementById('popup-layer');
+    const popup = document.createElement('div');
+    popup.className = 'mooquest-download';
+    popup.style.pointerEvents = 'all';
+    popup.style.zIndex = '10000';
+    popup.style.left = 'calc(50vw - 210px)';
+    popup.style.top = 'calc(50vh - 160px)';
+
+    popup.innerHTML = `
+      <div class="popup-title-bar" style="background:linear-gradient(90deg,#000080,#1084d0);cursor:move;">
+        <span class="popup-title-icon">&#128004;</span>
+        <span class="popup-title-text">MooQuest.exe - Download</span>
+        <div class="popup-title-buttons">
+          <span class="popup-title-btn mooquest-close-btn">X</span>
+        </div>
+      </div>
+      <div class="popup-body mooquest-download-body" style="background:#f0f0f0;">
+        <p style="font-weight:bold;margin-bottom:12px;">&#128190; File Download</p>
+        <p>Would you like to download <b>MOO-QUEST.EXE</b>?</p>
+        <div class="file-info">
+          Name: MOO-QUEST.EXE<br>
+          Type: Application<br>
+          From: coolsite99.com/games<br>
+          Size: 2.1 MB
+        </div>
+        <p class="fine-print">This file may contain content that could harm your computer. (It definitely will.)</p>
+      </div>
+      <div class="popup-buttons mooquest-download-buttons" style="flex-direction:row;justify-content:center;gap:12px;">
+        <button class="popup-choice-btn mooquest-yes-btn" style="min-width:120px;">Yes, Download!</button>
+        <button class="popup-choice-btn mooquest-no-btn" style="min-width:120px;">No Thanks</button>
+      </div>
+    `;
+
+    layer.appendChild(popup);
+
+    // Make draggable
+    const titleBar = popup.querySelector('.popup-title-bar');
+    let dragging = false, startX, startY, origX, origY;
+
+    titleBar.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.popup-title-btn')) return;
+      dragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      origX = popup.offsetLeft;
+      origY = popup.offsetTop;
+    });
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      popup.style.left = (origX + e.clientX - startX) + 'px';
+      popup.style.top = (origY + e.clientY - startY) + 'px';
+    };
+    const onUp = () => { dragging = false; };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+
+    const closePopup = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      popup.style.transition = 'transform 0.2s, opacity 0.2s';
+      popup.style.transform = 'scale(0.8)';
+      popup.style.opacity = '0';
+      setTimeout(() => popup.remove(), 200);
+    };
+
+    popup.querySelector('.mooquest-close-btn').addEventListener('click', closePopup);
+    popup.querySelector('.mooquest-no-btn').addEventListener('click', closePopup);
+
+    popup.querySelector('.mooquest-yes-btn').addEventListener('click', () => {
+      this._startMooQuestDownload(popup, closePopup);
+    });
+  },
+
+  _startMooQuestDownload(popup, cleanupFn) {
+    const body = popup.querySelector('.mooquest-download-body');
+    const buttons = popup.querySelector('.mooquest-download-buttons');
+
+    body.innerHTML = `
+      <p style="font-weight:bold;margin-bottom:8px;">&#128190; Downloading MOO-QUEST.EXE...</p>
+      <div class="mooquest-progress-bar">
+        <div class="mooquest-progress-fill"></div>
+      </div>
+      <div class="file-info" style="font-size:10px;margin-top:8px;">
+        Source: coolsite99.com/games/mooquest.exe<br>
+        Estimated time: 47 seconds (28.8k modem)<br>
+        <span class="mooquest-progress-text">Downloaded: 0 KB of 2,100 KB</span>
+      </div>
+    `;
+
+    buttons.style.display = 'none';
+
+    const fill = body.querySelector('.mooquest-progress-fill');
+    const progressText = body.querySelector('.mooquest-progress-text');
+    const totalKB = 2100;
+    const duration = 3000;
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const pct = Math.floor(progress * 100);
+      const downloaded = Math.floor(progress * totalKB);
+
+      fill.style.width = pct + '%';
+      progressText.textContent = 'Downloaded: ' + downloaded.toLocaleString() + ' KB of ' + totalKB.toLocaleString() + ' KB';
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setTimeout(() => {
+          cleanupFn();
+          setTimeout(() => {
+            this._addMooQuestDesktopIcon();
+            this._openMooQuestWindow();
+          }, 300);
+        }, 500);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  },
+
+  _addMooQuestDesktopIcon() {
+    if (this._mooQuestInstalled) return;
+    this._mooQuestInstalled = true;
+
+    const iconsContainer = document.getElementById('desktop-icons');
+    const icon = document.createElement('div');
+    icon.className = 'desktop-icon';
+    icon.dataset.icon = 'mooquest';
+    icon.innerHTML = '<div class="icon-image">&#128004;</div><span>MOO-QUEST<br>.EXE</span>';
+
+    // Position below existing icons
+    const existingIcons = iconsContainer.querySelectorAll('.desktop-icon:not(.junk-desktop-icon)');
+    const lastY = existingIcons.length > 0 ? existingIcons[existingIcons.length - 1].offsetTop : 0;
+    icon.style.left = '16px';
+    icon.style.top = (lastY + 92) + 'px';
+
+    iconsContainer.appendChild(icon);
+
+    icon.addEventListener('click', () => {
+      iconsContainer.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+      icon.classList.add('selected');
+    });
+
+    icon.addEventListener('dblclick', () => {
+      this._openMooQuestWindow();
+    });
+  },
+
+  _openMooQuestWindow() {
+    if (document.querySelector('.mooquest-window')) return;
+
+    const layer = document.getElementById('popup-layer');
+    const win = document.createElement('div');
+    win.className = 'mooquest-window';
+    win.style.pointerEvents = 'all';
+    win.style.zIndex = '10001';
+    win.style.left = '5vw';
+    win.style.top = '3vh';
+
+    win.innerHTML = `
+      <div class="popup-title-bar" style="background:linear-gradient(90deg,#800080,#9932cc);cursor:move;">
+        <span class="popup-title-icon">&#128004;</span>
+        <span class="popup-title-text">MOO-QUEST.EXE - The Legend of the Purple Cow</span>
+        <div class="popup-title-buttons">
+          <span class="popup-title-btn">&square;</span>
+          <span class="popup-title-btn mooquest-window-close">X</span>
+        </div>
+      </div>
+      <div class="mooquest-iframe-wrap">
+        <iframe src="${location.pathname.includes('/popup-adventure') ? '../moo-quest.html' : 'moo-quest.html'}" class="mooquest-iframe"></iframe>
+      </div>
+    `;
+
+    layer.appendChild(win);
+
+    // Make draggable
+    const titleBar = win.querySelector('.popup-title-bar');
+    let dragging = false, startX, startY, origX, origY;
+
+    titleBar.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.popup-title-btn')) return;
+      dragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      origX = win.offsetLeft;
+      origY = win.offsetTop;
+    });
+
+    const onMove = (e) => {
+      if (!dragging) return;
+      win.style.left = (origX + e.clientX - startX) + 'px';
+      win.style.top = (origY + e.clientY - startY) + 'px';
+    };
+    const onUp = () => { dragging = false; };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+
+    // Taskbar item
+    const taskbar = document.getElementById('taskbar-items');
+    const tbItem = document.createElement('div');
+    tbItem.className = 'taskbar-item active';
+    tbItem.textContent = 'MOO-QUEST.EXE';
+    tbItem.dataset.popupId = 'mooquest-window';
+    taskbar.appendChild(tbItem);
+
+    // Close button
+    win.querySelector('.mooquest-window-close').addEventListener('click', () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      win.remove();
+      tbItem.remove();
+      this._checkMooQuestProgress();
+    });
+  },
+
+  _checkMooQuestProgress() {
+    try {
+      const data = localStorage.getItem('mooquest_save');
+      if (!data) return;
+      const save = JSON.parse(data);
+      if (!save || !save.worlds) return;
+      const completed = Object.values(save.worlds).filter(w => w.completed).length;
+      if (completed >= 2) {
+        setTimeout(() => EndingSystem.play('cow_king'), 1000);
+      }
+    } catch (e) {
+      // Ignore parse errors
     }
   },
 

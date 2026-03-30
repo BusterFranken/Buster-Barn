@@ -1554,3 +1554,96 @@ body {
     padding: 4px;
   }
 }
+
+/* === MOOQUEST DOWNLOAD POPUP === */
+.mooquest-download {
+  position: absolute;
+  min-width: 420px;
+  max-width: 500px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.4);
+  animation: popup-appear 0.3s ease-out;
+}
+
+/* === MOOQUEST PROGRESS BAR === */
+.mooquest-progress-bar {
+  height: 20px;
+  background: #e0e0e0;
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  margin: 8px 0;
+}
+
+.mooquest-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #000080, #1084d0);
+}
+
+/* === MOOQUEST GAME WINDOW === */
+.mooquest-window {
+  position: absolute;
+  width: 90vw;
+  height: 85vh;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.4);
+  animation: popup-appear 0.3s ease-out;
+}
+
+.mooquest-iframe-wrap {
+  width: 100%;
+  height: calc(100% - 22px);
+  border: 2px solid;
+  border-color: #404040 #dfdfdf #dfdfdf #404040;
+  overflow: hidden;
+}
+
+.mooquest-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* === COW KING ENDING === */
+.ending-cowking {
+  background: linear-gradient(135deg, #4b0082, #ffd700, #800080);
+  color: white;
+  font-family: 'VT323', monospace;
+  text-align: center;
+  padding: 40px;
+}
+
+.ending-cowking h1 {
+  font-size: 40px;
+  text-shadow: 0 0 20px #ffd700, 0 0 40px #ffd700;
+  color: #ffd700;
+}
+
+.ending-cowking .royal-decree {
+  background: rgba(0,0,0,0.4);
+  border: 2px solid #ffd700;
+  padding: 16px;
+  margin: 16px auto;
+  max-width: 500px;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* === RESPONSIVE: MOOQUEST === */
+@media (max-width: 768px) {
+  .mooquest-download {
+    min-width: 300px;
+    max-width: 90vw;
+  }
+
+  .mooquest-window {
+    width: 98vw;
+    height: 80vh;
+    left: 1vw !important;
+    top: 2vh !important;
+  }
+}

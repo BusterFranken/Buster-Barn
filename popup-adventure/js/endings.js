@@ -18,7 +18,8 @@ const EndingSystem = {
       prince: () => this._playPrince(),
       fbi: () => this._playFBI(),
       hacker: () => this._playHacker(),
-      safe: () => this._playSafe()
+      safe: () => this._playSafe(),
+      cow_king: () => this._playCowKing()
     };
 
     const fn = endings[endingId];
@@ -274,6 +275,55 @@ const EndingSystem = {
           <p style="font-size:12px;color:#888;margin-top:16px;">Honestly, you might be too powerful. The pop-ups are scared of you now.</p>
         </div>
         ${this._gameOverPanel('THE INTERNET SURVIVOR', 'You navigated the entire early internet without clicking a single suspicious button. You are either incredibly disciplined or incredibly boring. Either way, you win.')}
+      </div>
+    `;
+    this._bindReplay();
+  },
+
+  // ===== ENDING 7: THE COW KING =====
+  _playCowKing() {
+    // Remove MooQuest window if still open
+    const mqWin = document.querySelector('.mooquest-window');
+    if (mqWin) mqWin.remove();
+    const mqTb = document.querySelector('[data-popup-id="mooquest-window"]');
+    if (mqTb) mqTb.remove();
+
+    this.overlay.className = '';
+    this.overlay.classList.add('active');
+
+    // Count completed worlds for the display
+    let worldsConquered = 0;
+    try {
+      const data = localStorage.getItem('mooquest_save');
+      if (data) {
+        const save = JSON.parse(data);
+        if (save && save.worlds) {
+          worldsConquered = Object.values(save.worlds).filter(w => w.completed).length;
+        }
+      }
+    } catch (e) {}
+
+    this.overlay.innerHTML = `
+      <div class="ending-cowking" style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:auto;position:relative;">
+        <p style="font-size:18px;margin-bottom:16px;opacity:0.8;">The prophecy has been fulfilled...</p>
+        <h1 style="margin-bottom:16px;">&#128014; ALL HAIL THE COW KING &#128014;</h1>
+        <p style="font-size:20px;margin-bottom:12px;">A purple cow has conquered <b>${worldsConquered} worlds</b></p>
+        <p style="font-size:20px;margin-bottom:12px;">AND survived the pop-up apocalypse.</p>
+        <p style="font-size:18px;margin-bottom:24px;">The realms of both games tremble before you.</p>
+        <div class="royal-decree">
+          <p style="font-weight:bold;text-align:center;margin-bottom:12px;color:#ffd700;font-size:18px;">&#128220; ROYAL DECREE &#128220;</p>
+          <p>By order of the Cow King, the following shall be law:</p>
+          <ul style="list-style:none;padding-left:8px;margin-top:8px;">
+            <li style="margin:6px 0;">&#128004; All pop-ups shall now contain cow facts</li>
+            <li style="margin:6px 0;">&#128004; BonziBuddy is hereby replaced by BonziCow</li>
+            <li style="margin:6px 0;">&#128004; The Nigerian Prince must pay his debts... in milk</li>
+            <li style="margin:6px 0;">&#128004; All toolbars shall be replaced with grass bars</li>
+            <li style="margin:6px 0;">&#128004; The Blue Screen of Death is now the Green Pasture of Peace</li>
+            <li style="margin:6px 0;">&#128004; Internet Explorer renamed to Internet Grazer</li>
+          </ul>
+        </div>
+        <p style="font-size:14px;margin-top:16px;opacity:0.7;">Moo. (Translation: You have achieved the ultimate ending.)</p>
+        ${this._gameOverPanel('THE COW KING', 'You downloaded a suspicious game from a pop-up, played it, conquered worlds, and became royalty. Your mom would be so confused. The cows are proud. The pop-ups bow before you.')}
       </div>
     `;
     this._bindReplay();

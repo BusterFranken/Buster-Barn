@@ -135,8 +135,10 @@ const PopupManager = {
         }
       }
       // X close = neutral choice (no traits, no items) for safe ending tracking
+      // Preserve ending from last button so final popups still trigger their ending
       this._xCloseCount++;
-      this._handleChoice(popupId, -1, { text: '[X]', traits: {}, item: null });
+      const lastBtn = popupData.buttons[popupData.buttons.length - 1];
+      this._handleChoice(popupId, -1, { text: '[X]', traits: {}, item: null, ending: lastBtn ? lastBtn.ending : undefined });
       this._removePopup(el);
     });
 
