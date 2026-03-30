@@ -269,11 +269,17 @@ class BootScene extends Phaser.Scene {
     this.game.soundSystem.init();
     this.updateLoading(1.0, 'Ready!');
 
-    // Transition to TutorialScene after short delay
+    // Transition to correct scene based on selected world
+    var self = this;
     this.time.delayedCall(500, function() {
-      this.scene.start('TutorialScene');
-      this.scene.launch('HUDScene');
-    }, [], this);
+      var worldId = self.game.selectedWorldId || 'tutorial';
+      if (worldId === 'tutorial') {
+        self.scene.start('TutorialScene');
+      } else {
+        self.scene.start('WorldScene', { worldId: worldId });
+      }
+      self.scene.launch('HUDScene');
+    });
   }
 
   createAnimations() {
@@ -343,5 +349,26 @@ class BootScene extends Phaser.Scene {
       frameRate: 8,
       repeat: -1
     });
+
+    // ── World 2: Crystal Caves enemies ──
+    this.anims.create({ key: 'cave_bat_fly', frames: this.anims.generateFrameNumbers('cave_bat', { start: 0, end: 1 }), frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'crystal_golem_idle', frames: this.anims.generateFrameNumbers('crystal_golem', { start: 0, end: 1 }), frameRate: 2, repeat: -1 });
+
+    // ── World 3: Lava Meadows enemies ──
+    this.anims.create({ key: 'fire_slime_idle', frames: this.anims.generateFrameNumbers('fire_slime', { start: 0, end: 1 }), frameRate: 3, repeat: -1 });
+    this.anims.create({ key: 'magma_beetle_walk', frames: this.anims.generateFrameNumbers('magma_beetle', { start: 0, end: 1 }), frameRate: 5, repeat: -1 });
+    this.anims.create({ key: 'fireball_spin', frames: this.anims.generateFrameNumbers('fireball', { start: 0, end: 3 }), frameRate: 10, repeat: -1 });
+
+    // ── World 4: Cloud Kingdom enemies ──
+    this.anims.create({ key: 'wind_sprite_float', frames: this.anims.generateFrameNumbers('wind_sprite', { start: 0, end: 1 }), frameRate: 3, repeat: -1 });
+    this.anims.create({ key: 'cloud_puff_idle', frames: this.anims.generateFrameNumbers('cloud_puff', { start: 0, end: 1 }), frameRate: 2, repeat: -1 });
+
+    // ── World 5: Shadow Barn enemies ──
+    this.anims.create({ key: 'shadow_rat_run', frames: this.anims.generateFrameNumbers('shadow_rat', { start: 0, end: 1 }), frameRate: 6, repeat: -1 });
+    this.anims.create({ key: 'barn_cat_idle', frames: this.anims.generateFrameNumbers('barn_cat', { start: 0, end: 1 }), frameRate: 2, repeat: -1 });
+
+    // ── World 6: Rainbow Falls enemies ──
+    this.anims.create({ key: 'fish_enemy_jump', frames: this.anims.generateFrameNumbers('fish_enemy', { start: 0, end: 1 }), frameRate: 4, repeat: -1 });
+    this.anims.create({ key: 'baron_beige_idle', frames: this.anims.generateFrameNumbers('baron_beige', { start: 0, end: 1 }), frameRate: 3, repeat: -1 });
   }
 }

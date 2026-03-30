@@ -127,6 +127,11 @@ const MenuSystem = (() => {
   // -------------------------------------------------------------------------
 
   function _handleAction(action) {
+    // Let Cowlipy react to the action
+    if (typeof HelpContent !== 'undefined' && HelpContent.react) {
+      HelpContent.react(action);
+    }
+
     switch (action) {
 
       // === FILE ===
@@ -355,6 +360,11 @@ const MenuSystem = (() => {
       case 'cowlipy':
         HelpContent.toggleCowlipy();
         break;
+
+      // === GUESTBOOK ===
+      case 'guestbook':
+        Guestbook.open();
+        break;
     }
   }
 
@@ -362,35 +372,80 @@ const MenuSystem = (() => {
   // Preferences dialog
   // -------------------------------------------------------------------------
 
+  // Desktop wallpaper themes
+  var THEMES = [
+    { id: 'teal',      label: 'Teal (Default)', color: '#008080' },
+    { id: 'navy',      label: 'Navy Blue',      color: '#000080' },
+    { id: 'forest',    label: 'Forest Green',   color: '#004040' },
+    { id: 'plum',      label: 'Plum',           color: '#400040' },
+    { id: 'storm',     label: 'Storm Gray',     color: '#404040' },
+    { id: 'sunset',    label: 'Sunset Orange',  color: '#804000' },
+    { id: 'berry',     label: 'Berry',          color: '#800040' },
+    { id: 'midnight',  label: 'Midnight',       color: '#0a0a2e' },
+  ];
+
   function _showPreferences() {
     var s = GameState.settings;
+    var currentTheme = s.theme || 'teal';
+
+    // Build theme swatches
+    var themeHTML = '<div style="padding:6px 0;border-bottom:1px solid #dfdfdf;margin-bottom:6px">' +
+      '<div style="font-size:12px;font-weight:bold;color:#000;margin-bottom:6px">Desktop Wallpaper:</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:4px">';
+    THEMES.forEach(function(t) {
+      var sel = t.id === currentTheme ? 'outline:2px solid #000;outline-offset:1px;' : '';
+      themeHTML += '<div class="theme-swatch" data-theme="' + t.id + '" title="' + t.label + '" ' +
+        'style="width:28px;height:28px;background:' + t.color + ';border:2px solid;' +
+        'border-color:#dfdfdf #404040 #404040 #dfdfdf;cursor:pointer;' + sel + '"></div>';
+    });
+    themeHTML += '</div></div>';
+
     var html =
       '<div style="padding:4px 0">' +
+        themeHTML +
         _prefRow('Scanlines', 'pref-scanlines', s.scanlinesEnabled) +
         _prefRow('Animations', 'pref-animations', s.animationsEnabled) +
         _prefRow('Music', 'pref-music', !s.musicMuted) +
         _prefRow('Sound Effects', 'pref-sfx', !s.sfxMuted) +
       '</div>';
 
+    var selectedTheme = currentTheme;
+
     var ref = MenuDialogs.custom('Preferences', html, [
       { label: 'OK', primary: true, action: function() {
-        // Read toggles and apply
         GameState.settings.scanlinesEnabled = _isChecked(ref, 'pref-scanlines');
         GameState.settings.animationsEnabled = _isChecked(ref, 'pref-animations');
         GameState.settings.musicMuted = !_isChecked(ref, 'pref-music');
         GameState.settings.sfxMuted = !_isChecked(ref, 'pref-sfx');
+        GameState.settings.theme = selectedTheme;
         _applyScanlines();
         _applyAnimations();
+        _applyTheme();
         _updateDynamicItems();
         DatabaseBridge.saveProgress(GameState);
       }},
       { label: 'Cancel' }
-    ], { width: 320 });
+    ], { width: 340 });
 
     // Wire toggle clicks
     ref.body.querySelectorAll('.pref-toggle').forEach(function(toggle) {
       toggle.addEventListener('click', function() {
         this.classList.toggle('checked');
+      });
+    });
+
+    // Wire theme swatch clicks
+    ref.body.querySelectorAll('.theme-swatch').forEach(function(swatch) {
+      swatch.addEventListener('click', function() {
+        selectedTheme = this.dataset.theme;
+        // Update visual selection
+        ref.body.querySelectorAll('.theme-swatch').forEach(function(s) {
+          s.style.outline = '';
+        });
+        this.style.outline = '2px solid #000';
+        this.style.outlineOffset = '1px';
+        // Live preview
+        document.body.style.backgroundColor = _getThemeColor(selectedTheme);
       });
     });
   }
@@ -499,6 +554,18 @@ const MenuSystem = (() => {
     return text;
   }
 
+  function _applyTheme() {
+    var color = _getThemeColor(GameState.settings.theme || 'teal');
+    document.body.style.backgroundColor = color;
+  }
+
+  function _getThemeColor(themeId) {
+    for (var i = 0; i < THEMES.length; i++) {
+      if (THEMES[i].id === themeId) return THEMES[i].color;
+    }
+    return '#008080';
+  }
+
   function _applyScanlines() {
     document.querySelectorAll('.scanline').forEach(function(el) {
       el.style.setProperty('--scanline-opacity', GameState.settings.scanlinesEnabled ? '1' : '0');
@@ -546,6 +613,16 @@ const MenuSystem = (() => {
     DatabaseBridge.loadProfile().then(function(prof) {
       if (prof) Object.assign(GameState.profile, prof);
       _updateDynamicItems();
+    });
+    // Load saved game progress for settings (theme, etc.)
+    DatabaseBridge.loadProgress().then(function(data) {
+      if (data && data.settings) {
+        Object.assign(GameState.settings, data.settings);
+        _applyTheme();
+        _applyScanlines();
+        _applyAnimations();
+        _updateDynamicItems();
+      }
     });
   }
 

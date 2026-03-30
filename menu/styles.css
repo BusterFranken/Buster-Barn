@@ -526,3 +526,49 @@
 #save-import-input {
   display: none;
 }
+
+/* =============================================================================
+   News Ticker
+   ============================================================================= */
+
+#news-ticker {
+  position: relative;
+}
+
+#news-ticker::before {
+  content: 'BREAKING';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #800000;
+  color: #ffff00;
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  border-right: 1px solid #444;
+}
+
+/* =============================================================================
+   Webring Badges
+   ============================================================================= */
+
+.flex > [title] .win95-border-sunken {
+  transition: transform 0.1s ease;
+}
+
+/* =============================================================================
+   World Stars Animation
+   ============================================================================= */
+
+.world-stars span {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.world-stars span:hover {
+  transform: scale(1.3);
+}

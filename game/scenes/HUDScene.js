@@ -35,21 +35,39 @@ class HUDScene extends Phaser.Scene {
     // === CONTROLS HINT (bottom of screen, fades out) ===
     this._buildControlsHint();
 
-    // ----- Listen to TutorialScene events -----
+    // ----- Listen to gameplay scene events (TutorialScene or WorldScene) -----
+    this._gameScene = null;
     var tutorial = this.scene.get('TutorialScene');
-    if (tutorial) {
-      tutorial.events.on('healthChanged', this.updateHealth, this);
-      tutorial.events.on('scoreChanged', this.updateScore, this);
-      tutorial.events.on('itemsChanged', this.updateItems, this);
-      tutorial.events.on('phaseChanged', this.updatePhase, this);
-      tutorial.events.on('playerDied', this._onPlayerDied, this);
+    var world = this.scene.get('WorldScene');
+    var activeScene = (tutorial && tutorial.scene.isActive()) ? tutorial :
+                      (world && world.scene.isActive()) ? world : tutorial;
+    if (activeScene) {
+      this._gameScene = activeScene;
+      activeScene.events.on('healthChanged', this.updateHealth, this);
+      activeScene.events.on('scoreChanged', this.updateScore, this);
+      activeScene.events.on('itemsChanged', this.updateItems, this);
+      activeScene.events.on('phaseChanged', this.updatePhase, this);
+      activeScene.events.on('playerDied', this._onPlayerDied, this);
+      activeScene.events.on('airChanged', this._updateAir, this);
+      activeScene.events.on('keysChanged', this._updateKeys, this);
+      activeScene.events.on('bossStart', this._showBossBar, this);
+      activeScene.events.on('bossHPChanged', this._updateBossHP, this);
+      activeScene.events.on('bossDefeated', this._hideBossBar, this);
     }
 
+    // Build extra HUD elements for world mechanics
+    this._buildAirMeter();
+    this._buildBossBar();
+    this._buildKeyCounter();
+
     // Pause key
+    var self = this;
     this.input.keyboard.on('keydown-ESC', function () {
-      this.scene.pause('TutorialScene');
-      this.scene.launch('PauseScene');
-    }, this);
+      if (self._gameScene) {
+        self.scene.pause(self._gameScene.scene.key);
+      }
+      self.scene.launch('PauseScene');
+    });
 
     // Clean up listeners when this scene shuts down
     this.events.on('shutdown', this._cleanup, this);
@@ -398,13 +416,86 @@ class HUDScene extends Phaser.Scene {
   // ===========================================================================
 
   _cleanup() {
-    var tutorial = this.scene.get('TutorialScene');
-    if (tutorial) {
-      tutorial.events.off('healthChanged', this.updateHealth, this);
-      tutorial.events.off('scoreChanged', this.updateScore, this);
-      tutorial.events.off('itemsChanged', this.updateItems, this);
-      tutorial.events.off('phaseChanged', this.updatePhase, this);
-      tutorial.events.off('playerDied', this._onPlayerDied, this);
+    if (this._gameScene) {
+      this._gameScene.events.off('healthChanged', this.updateHealth, this);
+      this._gameScene.events.off('scoreChanged', this.updateScore, this);
+      this._gameScene.events.off('itemsChanged', this.updateItems, this);
+      this._gameScene.events.off('phaseChanged', this.updatePhase, this);
+      this._gameScene.events.off('playerDied', this._onPlayerDied, this);
+      this._gameScene.events.off('airChanged', this._updateAir, this);
+      this._gameScene.events.off('keysChanged', this._updateKeys, this);
+      this._gameScene.events.off('bossStart', this._showBossBar, this);
+      this._gameScene.events.off('bossHPChanged', this._updateBossHP, this);
+      this._gameScene.events.off('bossDefeated', this._hideBossBar, this);
     }
+  }
+
+  // ===========================================================================
+  // EXTRA HUD: Air Meter, Boss HP, Key Counter
+  // ===========================================================================
+
+  _buildAirMeter() {
+    this.airContainer = this.add.container(0, 0).setVisible(false);
+    var ax = 300, ay = 12, aw = 200, ah = 16;
+    var bg = this.add.rectangle(ax + aw / 2, ay + ah / 2, aw, ah, 0x0a0a1a);
+    var frame = this.add.graphics();
+    frame.lineStyle(2, 0x808080); frame.strokeRect(ax, ay, aw, ah);
+    this.airFill = this.add.rectangle(ax + 2, ay + 2, aw - 4, ah - 4, 0x4488ff).setOrigin(0, 0);
+    var label = this.add.text(ax - 30, ay, 'AIR', { fontFamily: '"Courier New", monospace', fontSize: '12px', color: '#88ccff', fontStyle: 'bold' });
+    this.airContainer.add([bg, frame, label, this.airFill]);
+    this.airMaxWidth = aw - 4;
+  }
+
+  _updateAir(value) {
+    if (!this.airContainer.visible) this.airContainer.setVisible(true);
+    var pct = Math.max(0, Math.min(1, value / 100));
+    this.airFill.width = this.airMaxWidth * pct;
+    if (pct < 0.3) this.airFill.setFillStyle(0xff4444);
+    else if (pct < 0.6) this.airFill.setFillStyle(0xffaa00);
+    else this.airFill.setFillStyle(0x4488ff);
+  }
+
+  _buildBossBar() {
+    this.bossContainer = this.add.container(0, 0).setVisible(false);
+    var bx = 200, by = 580, bw = 400, bh = 18;
+    var bg = this.add.rectangle(bx + bw / 2, by + bh / 2, bw, bh, 0x1a1a1a);
+    var frame = this.add.graphics();
+    frame.lineStyle(2, 0xff0000); frame.strokeRect(bx, by, bw, bh);
+    this.bossFill = this.add.rectangle(bx + 2, by + 2, bw - 4, bh - 4, 0xff0000).setOrigin(0, 0);
+    var label = this.add.text(bx + bw / 2, by - 14, 'BARON BEIGE', { fontFamily: '"Courier New", monospace', fontSize: '12px', color: '#ff4444', fontStyle: 'bold' }).setOrigin(0.5, 0);
+    this.bossContainer.add([bg, frame, label, this.bossFill]);
+    this.bossBarMaxWidth = bw - 4;
+  }
+
+  _showBossBar(hp, maxHP) {
+    this.bossContainer.setVisible(true);
+    this.bossMaxHP = maxHP;
+    this._updateBossHP(hp, maxHP);
+  }
+
+  _updateBossHP(hp, maxHP) {
+    var pct = Math.max(0, hp / (maxHP || 1));
+    this.bossFill.width = this.bossBarMaxWidth * pct;
+  }
+
+  _hideBossBar() {
+    this.bossContainer.setVisible(false);
+  }
+
+  _buildKeyCounter() {
+    this.keyContainer = this.add.container(0, 0).setVisible(false);
+    this.keyText = this.add.text(648, 68, 'KEYS: 0/3', {
+      fontFamily: '"Courier New", monospace',
+      fontSize: '14px',
+      fontStyle: 'bold',
+      color: '#ffd700'
+    });
+    this.keyContainer.add([this.keyText]);
+  }
+
+  _updateKeys(collected, required) {
+    if (!this.keyContainer.visible) this.keyContainer.setVisible(true);
+    this.keyText.setText('KEYS: ' + collected + '/' + required);
+    if (collected >= required) this.keyText.setColor('#00ff00');
   }
 }

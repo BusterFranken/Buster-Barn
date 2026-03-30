@@ -30,10 +30,11 @@ window.startMooQuest = function(worldId) {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
     },
-    scene: [BootScene, TutorialScene, HUDScene, PauseScene, VictoryScene],
+    scene: [BootScene, TutorialScene, WorldScene, HUDScene, PauseScene, VictoryScene],
     backgroundColor: '#87CEEB'
   };
 
   window.mooQuestGame = new Phaser.Game(config);
   window.mooQuestGame.soundSystem = soundSystem;
+  window.mooQuestGame.selectedWorldId = worldId;
 };

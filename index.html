@@ -128,15 +128,21 @@
         <span class="text-[#ffff00] text-sm">🐄</span>
         <span class="text-white text-sm font-bold">MOO-QUEST.EXE — The Legend of the Purple Cow</span>
       </div>
-      <div class="flex items-center gap-1">
-        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
-          <span class="text-black text-[10px] font-bold leading-none">_</span>
+      <div class="flex items-center gap-2">
+        <!-- Title Bar Clock -->
+        <div class="win95-border-sunken bg-[#c0c0c0] px-2 py-0 flex items-center">
+          <span id="titlebar-clock" class="text-black text-[11px] font-mono font-bold">12:00 AM</span>
         </div>
-        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
-          <span class="text-black text-[10px] font-bold leading-none">□</span>
-        </div>
-        <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
-          <span class="text-black text-[10px] font-bold leading-none">✕</span>
+        <div class="flex items-center gap-1">
+          <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+            <span class="text-black text-[10px] font-bold leading-none">_</span>
+          </div>
+          <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+            <span class="text-black text-[10px] font-bold leading-none">□</span>
+          </div>
+          <div class="win95-btn size-5 flex justify-center items-center bg-[#c0c0c0]">
+            <span class="text-black text-[10px] font-bold leading-none">✕</span>
+          </div>
         </div>
       </div>
     </div>
@@ -232,6 +238,15 @@
         <span class="text-[#ff0000] text-xs font-bold uppercase blink">★ NEW! ★</span>
         <span class="text-black text-sm font-bold">Version 2.0 Released — Now with MULTIPLAYER support!</span>
         <span class="text-[#ff0000] text-xs font-bold uppercase blink">★ HOT! ★</span>
+      </div>
+
+      <!-- News Ticker -->
+      <div id="news-ticker" class="w-full max-w-[1200px] bg-black win95-border-sunken overflow-hidden" style="height:22px">
+        <div class="marquee-container" style="height:100%;display:flex;align-items:center">
+          <span id="news-ticker-text" class="marquee-text text-[#00ff00] font-mono text-xs font-bold" style="text-shadow:0 0 6px rgba(0,255,0,0.4)">
+            ★ Welcome to MOO-QUEST! Complete worlds to see your name on the ticker! ★
+          </span>
+        </div>
       </div>
 
       <!-- Hero Content -->
@@ -408,10 +423,10 @@
         <span class="text-[#ff0000] text-3xl font-black uppercase blink">⚠ UNDER CONSTRUCTION ⚠</span>
         <span class="text-black text-base font-bold text-center">More worlds coming soon! Sign our guestbook and bookmark this page!</span>
         <div class="flex items-center gap-4 flex-wrap justify-center">
-          <button class="flex justify-center items-center bg-[#0000ff] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
+          <button onclick="if(typeof Guestbook!=='undefined')Guestbook.open()" class="flex justify-center items-center bg-[#0000ff] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
             <span class="text-white text-sm font-bold uppercase">📝 SIGN GUESTBOOK</span>
           </button>
-          <button class="flex justify-center items-center bg-[#ff0000] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
+          <button onclick="MenuDialogs.alert('Bookmark This Page!','Press Ctrl+D (or Cmd+D on Mac) to bookmark MOO-QUEST.EXE!\n\nAdd us to your favorites!')" class="flex justify-center items-center bg-[#ff0000] px-6 py-2 win95-btn cursor-pointer hover:brightness-110">
             <span class="text-white text-sm font-bold uppercase">⭐ BOOKMARK PAGE</span>
           </button>
         </div>
@@ -421,18 +436,45 @@
     </div>
 
     <!-- Footer -->
-    <div class="flex flex-col items-center bg-[#c0c0c0] px-8 py-4 gap-2 border-t-4 border-t-[#808080]">
-      <span class="text-black text-xs font-bold text-center">© 1997 Moo-Quest Interactive. Best viewed in Netscape Navigator 4.0 at 800x600 resolution.</span>
-      <div class="flex items-center gap-4 flex-wrap justify-center">
-        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">About Us</a>
-        <span class="text-[#808080] text-xs">|</span>
-        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">FAQ</a>
-        <span class="text-[#808080] text-xs">|</span>
-        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">Webmaster</a>
-        <span class="text-[#808080] text-xs">|</span>
-        <a href="#" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">Cool Links</a>
+    <div class="flex flex-col items-center bg-[#c0c0c0] px-8 py-4 gap-3 border-t-4 border-t-[#808080]">
+
+      <!-- Cool Links Webring -->
+      <div class="flex items-center gap-3 flex-wrap justify-center">
+        <div class="win95-border-sunken bg-[#000080] px-3 py-1 cursor-pointer hover:brightness-125" title="Moo-Quest Fan Club">
+          <span class="text-[#ffff00] text-[10px] font-bold font-mono">🐄 MOO-QUEST FAN CLUB</span>
+        </div>
+        <div class="win95-border-sunken bg-[#800000] px-3 py-1 cursor-pointer hover:brightness-125" title="Baron Beige Hate Page">
+          <span class="text-[#ffff00] text-[10px] font-bold font-mono">💀 ANTI-BEIGE ALLIANCE</span>
+        </div>
+        <div class="win95-border-sunken bg-[#006600] px-3 py-1 cursor-pointer hover:brightness-125" title="Violet's Pixel Art Gallery">
+          <span class="text-[#00ff00] text-[10px] font-bold font-mono">🎨 PIXEL ART GALLERY</span>
+        </div>
+        <div class="win95-border-sunken bg-[#660066] px-3 py-1 cursor-pointer hover:brightness-125" title="Purple Cow Webring">
+          <span class="text-[#ff88ff] text-[10px] font-bold font-mono">🔗 PURPLE COW WEBRING</span>
+        </div>
+        <div class="win95-border-sunken bg-[#444400] px-3 py-1 cursor-pointer hover:brightness-125" title="Retro Gaming Hub">
+          <span class="text-[#ffff00] text-[10px] font-bold font-mono">🕹️ RETRO GAMING HUB</span>
+        </div>
       </div>
-      <span class="text-[#808080] font-mono text-[10px]">You are visitor #<span id="visitor-count">0024891</span> — Page last updated: 12/15/1997</span>
+
+      <span class="text-black text-xs font-bold text-center">© 1997 Moo-Quest Interactive. Best viewed in Netscape Navigator 4.0 at 800x600 resolution.</span>
+
+      <div class="flex items-center gap-4 flex-wrap justify-center">
+        <a href="#" onclick="if(typeof HelpContent!=='undefined')HelpContent.showAbout();return false" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">About Us</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" onclick="if(typeof HelpContent!=='undefined')HelpContent.showHowToPlay();return false" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">FAQ</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" onclick="if(typeof Guestbook!=='undefined')Guestbook.open();return false" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">Guestbook</a>
+        <span class="text-[#808080] text-xs">|</span>
+        <a href="#" onclick="if(typeof Leaderboard!=='undefined')Leaderboard.show();return false" class="text-[#0000ff] text-xs font-bold underline hover:text-[#ff0000]">High Scores</a>
+      </div>
+
+      <!-- Odometer Visitor Counter -->
+      <div class="flex items-center gap-2">
+        <span class="text-[#808080] font-mono text-[10px]">You are visitor #</span>
+        <div id="visitor-odometer" class="flex gap-[1px]" style="display:inline-flex"></div>
+        <span class="text-[#808080] font-mono text-[10px]"> — Page last updated: 12/15/1997</span>
+      </div>
     </div>
 
   </div>
@@ -465,7 +507,6 @@
     window.addEventListener('load', () => {
       animateCounter('players', 847, 2000);
       animateCounter('quests', 1247891, 3000);
-      animateCounter('visitor-count', 24891, 2500);
     });
 
     setInterval(() => {
@@ -537,36 +578,45 @@
         var btnSpan = btn ? btn.querySelector('span') : null;
         var scoreDiv = card.querySelector('.world-score');
 
+        // Map world keys to launchGame IDs
+        var launchIds = {
+          emerald_pastures: 'tutorial',
+          crystal_caves: 'crystal_caves',
+          lava_meadows: 'lava_meadows',
+          cloud_kingdom: 'cloud_kingdom',
+          shadow_barn: 'shadow_barn',
+          rainbow_falls: 'rainbow_falls'
+        };
+
         if (completed) {
-          // Show completed state
           statusEl.textContent = '★ COMPLETED';
           statusEl.style.color = '#ffff00';
           card.classList.remove('opacity-75');
           btn.disabled = false;
           btn.classList.remove('cursor-not-allowed');
           btn.classList.add('cursor-pointer');
+          btn.onclick = function() { launchGame(launchIds[c.key]); };
           btnSpan.textContent = '▶ REPLAY WORLD';
-          // Show best score
           if (scoreDiv) {
             scoreDiv.style.display = 'block';
             scoreDiv.querySelector('span').textContent = bestScore.toLocaleString('en-US');
           }
         } else if (unlocked) {
-          // Show unlocked state
           statusEl.textContent = '✓ UNLOCKED';
           statusEl.style.color = '#000000';
           card.classList.remove('opacity-75');
           btn.disabled = false;
           btn.classList.remove('cursor-not-allowed');
           btn.classList.add('cursor-pointer');
+          btn.onclick = function() { launchGame(launchIds[c.key]); };
           btnSpan.textContent = '▶ ENTER WORLD';
           if (scoreDiv) scoreDiv.style.display = 'none';
         } else {
-          // Locked state (default)
           statusEl.textContent = '🔒 LOCKED';
           statusEl.style.color = '#000000';
           if (!card.classList.contains('opacity-75')) card.classList.add('opacity-75');
           btn.disabled = true;
+          btn.onclick = null;
           btn.classList.add('cursor-not-allowed');
           btn.classList.remove('cursor-pointer');
           btnSpan.textContent = '🔒 LOCKED';
@@ -584,6 +634,11 @@
   <!-- Game modules (loaded as regular scripts, order matters) -->
   <script src="game/data/GameState.js"></script>
   <script src="game/data/LevelData.js"></script>
+  <script src="game/data/World2Data.js"></script>
+  <script src="game/data/World3Data.js"></script>
+  <script src="game/data/World4Data.js"></script>
+  <script src="game/data/World5Data.js"></script>
+  <script src="game/data/World6Data.js"></script>
   <script src="game/utils/DatabaseBridge.js"></script>
   <script src="game/systems/SoundSystem.js"></script>
   <script src="game/systems/DialogSystem.js"></script>
@@ -594,6 +649,7 @@
   <script src="game/scenes/HUDScene.js"></script>
   <script src="game/scenes/PauseScene.js"></script>
   <script src="game/scenes/VictoryScene.js"></script>
+  <script src="game/scenes/WorldScene.js"></script>
   <script src="game/game.js"></script>
 
   <!-- Menu system (DOM-based, separate from Phaser) -->
@@ -601,12 +657,90 @@
   <script src="menu/HelpContent.js"></script>
   <script src="menu/InventoryUI.js"></script>
   <script src="menu/Leaderboard.js"></script>
+  <script src="menu/Guestbook.js"></script>
+  <script src="menu/NewsTicker.js"></script>
+  <script src="menu/StartupSound.js"></script>
+  <script src="menu/WorldEnhance.js"></script>
   <script src="menu/MenuSystem.js"></script>
   <script>
-    // Initialize menu system after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
+      // Core menu system
       MenuSystem.init();
+
+      // News ticker
+      NewsTicker.init();
+
+      // Startup boot sound (plays on first click)
+      StartupSound.init();
+
+      // World card enhancements (stars, tooltips, unlock animations)
+      WorldEnhance.init();
+
+      // Title bar clock
+      (function() {
+        var clockEl = document.getElementById('titlebar-clock');
+        if (!clockEl) return;
+        function tick() {
+          var d = new Date();
+          var h = d.getHours();
+          var m = d.getMinutes();
+          var ampm = h >= 12 ? 'PM' : 'AM';
+          h = h % 12 || 12;
+          clockEl.textContent = h + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+        }
+        tick();
+        setInterval(tick, 10000);
+      })();
+
+      // Odometer visitor counter
+      (function() {
+        var container = document.getElementById('visitor-odometer');
+        if (!container) return;
+        var target = 24891;
+        // Persist visitor count, increment each visit
+        var stored = parseInt(localStorage.getItem('mooquest_visits') || '0');
+        if (stored > 0) {
+          target = stored + 1;
+        }
+        localStorage.setItem('mooquest_visits', String(target));
+
+        var digits = String(target).padStart(7, '0').split('');
+        digits.forEach(function(d, i) {
+          var digitEl = document.createElement('div');
+          digitEl.style.cssText =
+            'background:#000;color:#00ff00;font-family:VT323,monospace;font-size:14px;' +
+            'width:12px;height:16px;text-align:center;line-height:16px;' +
+            'border:1px solid #404040;text-shadow:0 0 4px rgba(0,255,0,0.5)';
+          digitEl.textContent = '0';
+          container.appendChild(digitEl);
+
+          // Animate each digit with a slot-machine effect
+          var finalVal = parseInt(d);
+          var counter = { val: 0 };
+          var delay = i * 150;
+          setTimeout(function() {
+            var steps = finalVal + (i < 3 ? 10 : 0); // first digits spin more
+            var step = 0;
+            var interval = setInterval(function() {
+              digitEl.textContent = step % 10;
+              step++;
+              if (step > steps) {
+                clearInterval(interval);
+                digitEl.textContent = d;
+              }
+            }, 50);
+          }, 500 + delay);
+        });
+      })();
     });
+
+    // Hook WorldEnhance.update into refreshMenuState
+    var _origRefreshMenuState = refreshMenuState;
+    refreshMenuState = function() {
+      _origRefreshMenuState();
+      if (typeof WorldEnhance !== 'undefined') WorldEnhance.update();
+      if (typeof NewsTicker !== 'undefined') NewsTicker.init();
+    };
   </script>
 
 </body>

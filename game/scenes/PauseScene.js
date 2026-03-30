@@ -99,29 +99,41 @@ class PauseScene extends Phaser.Scene {
   // ACTIONS
   // ===========================================================================
 
+  _getActiveGameScene() {
+    var ts = this.scene.get('TutorialScene');
+    var ws = this.scene.get('WorldScene');
+    if (ts && ts.scene.isPaused()) return 'TutorialScene';
+    if (ws && ws.scene.isPaused()) return 'WorldScene';
+    return ts && ts.scene.isActive() ? 'TutorialScene' : 'WorldScene';
+  }
+
   _resumeGame() {
     if (this.game.soundSystem) {
       this.game.soundSystem.play('dialog');
     }
+    var sceneKey = this._getActiveGameScene();
     this.scene.stop();
-    this.scene.resume('TutorialScene');
+    this.scene.resume(sceneKey);
   }
 
   _restartGame() {
     if (this.game.soundSystem) {
       this.game.soundSystem.play('lever');
     }
-    // Stop all related scenes, then restart
+    var sceneKey = this._getActiveGameScene();
     this.scene.stop('HUDScene');
     this.scene.stop('PauseScene');
-    this.scene.stop('TutorialScene');
+    this.scene.stop(sceneKey);
 
-    // Reset game state
     GameState.reset();
     GameState.tutorial.startTime = Date.now();
 
-    // Relaunch
-    this.scene.start('TutorialScene');
+    if (sceneKey === 'WorldScene') {
+      var worldId = this.game.selectedWorldId;
+      this.scene.start('WorldScene', { worldId: worldId });
+    } else {
+      this.scene.start('TutorialScene');
+    }
     this.scene.launch('HUDScene');
   }
 

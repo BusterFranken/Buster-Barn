@@ -289,6 +289,7 @@ const StoryTree = {
 
     toolbar_install: {
       style: 'download',
+      trickClose: true,
       title: 'SuperSearch Toolbar v3.7',
       icon: '&#128295;',
       body: `
@@ -347,6 +348,7 @@ const StoryTree = {
 
     free_casino: {
       style: 'prize',
+      trickClose: true,
       title: 'MEGA CASINO ROYALE ONLINE!!!',
       icon: '&#127920;',
       body: `
@@ -404,6 +406,7 @@ const StoryTree = {
 
     antivirus_upgrade: {
       style: 'warning',
+      trickClose: true,
       title: 'ALERT: 238 NEW THREATS FOUND!!',
       icon: '&#9888;',
       body: `
@@ -481,6 +484,7 @@ const StoryTree = {
 
     sketchy_download: {
       style: 'download',
+      dodgy: true,
       title: 'File Download',
       icon: '&#128190;',
       body: `
@@ -509,6 +513,7 @@ const StoryTree = {
 
     limewire_pro: {
       style: 'download',
+      trickClose: true,
       title: 'LimeWire PRO GOLD Edition',
       icon: '&#127925;',
       body: `
@@ -536,6 +541,8 @@ const StoryTree = {
 
     bonzi_buddy: {
       style: 'bonzi',
+      trickClose: true,
+      dodgy: true,
       title: 'BonziBuddy Wants To Help!',
       icon: '&#128053;',
       body: `
@@ -618,6 +625,7 @@ const StoryTree = {
 
     celebrity_quiz: {
       style: 'quiz',
+      trickClose: true,
       title: 'SUPER FUN QUIZ TIME!!!',
       icon: '&#11088;',
       body: `
@@ -648,6 +656,7 @@ const StoryTree = {
     // --- GULLIBLE + GREEDY ---
     prince_wire_transfer: {
       style: 'email',
+      trickClose: true,
       title: 'RE: RE: RE: URGENT - Prince Abayomi',
       icon: '&#128231;',
       body: `
@@ -674,6 +683,7 @@ const StoryTree = {
 
     spanish_lottery: {
       style: 'prize',
+      trickClose: true,
       title: 'SPANISH NATIONAL LOTTERY WINNER!!',
       icon: '&#127881;',
       body: `
@@ -700,6 +710,7 @@ const StoryTree = {
     // --- GULLIBLE + PARANOID ---
     fake_microsoft_update: {
       style: 'download',
+      trickClose: true,
       title: 'URGENT: Windows Security Update',
       icon: '&#128187;',
       body: `
@@ -729,6 +740,7 @@ const StoryTree = {
 
     password_stolen: {
       style: 'warning',
+      trickClose: true,
       title: 'PASSWORD BREACH ALERT!!',
       icon: '&#128274;',
       body: `
@@ -755,6 +767,7 @@ const StoryTree = {
     // --- GREEDY + RECKLESS ---
     pirate_movies: {
       style: 'download',
+      trickClose: true,
       title: 'FREE MOVIES - ALL OF THEM!!',
       icon: '&#127916;',
       body: `
@@ -780,6 +793,7 @@ const StoryTree = {
 
     free_trial_cc: {
       style: 'money',
+      trickClose: true,
       title: 'FREE 30-DAY TRIAL!!!',
       icon: '&#128179;',
       body: `
@@ -866,6 +880,7 @@ const StoryTree = {
     // --- RECKLESS + CURIOUS ---
     dark_web_dare: {
       style: 'hacker',
+      trickClose: true,
       title: 'DARE: ENTER THE DARK WEB',
       icon: '&#128128;',
       body: `
@@ -922,6 +937,8 @@ const StoryTree = {
     // --- GULLIBLE + RECKLESS ---
     dating_popup: {
       style: 'dating',
+      trickClose: true,
+      dodgy: true,
       title: 'HOT SINGLES IN YOUR AREA!!!',
       icon: '&#128149;',
       body: `
@@ -947,6 +964,8 @@ const StoryTree = {
 
     miracle_pill: {
       style: 'prize',
+      trickClose: true,
+      dodgy: true,
       title: 'DOCTORS HATE THIS ONE TRICK!!',
       icon: '&#128138;',
       body: `
@@ -978,6 +997,7 @@ const StoryTree = {
     // --- GREEDY + CURIOUS ---
     crypto_mine: {
       style: 'money',
+      trickClose: true,
       title: 'MINE BITCOIN FROM YOUR BROWSER!!',
       icon: '&#9939;',
       body: `
@@ -1002,6 +1022,7 @@ const StoryTree = {
 
     pyramid_scheme: {
       style: 'money',
+      trickClose: true,
       title: 'BE YOUR OWN BOSS!!!',
       icon: '&#128176;',
       body: `
@@ -1137,6 +1158,7 @@ const StoryTree = {
     // --- CURIOUS + GULLIBLE ---
     alien_contact: {
       style: 'hacker',
+      trickClose: true,
       title: 'NASA HIDING ALIEN CONTACT!!',
       icon: '&#128125;',
       body: `
@@ -1162,6 +1184,7 @@ const StoryTree = {
 
     time_travel: {
       style: 'weird',
+      trickClose: true,
       title: 'TIME TRAVEL IS REAL!!!',
       icon: '&#9200;',
       body: `

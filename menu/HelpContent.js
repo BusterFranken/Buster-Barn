@@ -130,6 +130,31 @@ const HelpContent = (() => {
     "Levers open gates. Look for them in puzzle zones!"
   ];
 
+  // Context-aware messages keyed by action
+  var cowlipyReactions = {
+    equipment:       "Ooh, checking your gear! The Purple Cape is looking fabulous today.",
+    powerups:        "Power-ups are found in worlds. Keep exploring!",
+    cosmetics:       "Fashion is the TRUE endgame. I respect your priorities.",
+    leaderboard:     "Checking the high scores? Feeling competitive, are we?",
+    saveGame:        "Smart move! You never know when Baron Beige might strike.",
+    loadGame:        "Welcome back! Your adventure continues...",
+    newGame:         "A fresh start! Every great hero begins somewhere.",
+    playerStats:     "Numbers don't lie \u2014 you're getting stronger!",
+    achievements:    "So many badges to earn! Keep at it!",
+    preferences:     "Customizing the experience? I like your style.",
+    howToPlay:       "Reading the manual? How refreshingly old-school of you!",
+    controls:        "Pro tip: Z and X are your best friends in combat.",
+    about:           "Ah yes, the credits. I should be in there somewhere...",
+    worldMap:        "So many worlds to explore! Which one calls to you?",
+    resetProgress:   "WAIT! Are you sure?! Think of all those Moo-Coins!",
+    exportSave:      "Backing up your save? Wise. Very wise.",
+    exit:            "Don't go! ...I mean, it's fine. I'll just be here. Alone.",
+    activeQuests:    "Adventure awaits! Just gotta start a world first.",
+    dailyQuests:     "Daily quests are coming soon! I'm as excited as you are!",
+    fullscreen:      "Going fullscreen? Now THAT'S immersive gaming.",
+    guestbook:       "The guestbook! Say something nice for the other visitors!",
+  };
+
   function toggleCowlipy() {
     if (!cowlipyEl) {
       _createCowlipy();
@@ -172,11 +197,24 @@ const HelpContent = (() => {
     cowlipyEl.querySelector('.cowlipy-text').textContent = tip;
   }
 
+  /**
+   * Show a context-aware reaction if Cowlipy is visible.
+   * Called by MenuSystem when an action fires.
+   */
+  function react(action) {
+    if (!cowlipyVisible || !cowlipyEl) return;
+    var msg = cowlipyReactions[action];
+    if (msg) {
+      cowlipyEl.querySelector('.cowlipy-text').textContent = msg;
+    }
+  }
+
   return {
     showHowToPlay: showHowToPlay,
     showControls: showControls,
     showAbout: showAbout,
-    toggleCowlipy: toggleCowlipy
+    toggleCowlipy: toggleCowlipy,
+    react: react
   };
 
 })();
